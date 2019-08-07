@@ -106,17 +106,18 @@ let s:mode = minimode#compile({
             \})
 
 function! yankee#paste(cmd, visual)
-    let cmd = (a:visual ? 'gv' : '').(v:count ? v:count : '').a:cmd
     let s:select = !a:visual && &l:modifiable
+    let c = v:count ? v:count : ''
+    let gv = a:visual ? 'gv' : ''
     
     let reg = yankee#ring#sync_clipboard()
     if v:register != reg
         " If asked to paste from specific register, just do the put
-        exec 'normal! "'.v:register.cmd
+        exec 'normal! '.gv.c.'"'.v:register.a:cmd
         return
     endif
 
-    let s:cmd = '""'.cmd
+    let s:cmd = gv.c.'""'.a:cmd
 
     " Handle terminals, etc.
     if !&l:modifiable
